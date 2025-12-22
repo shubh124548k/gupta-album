@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Premium Wedding Color Palette */
+    --background: 40 33% 98%;
+    --foreground: 30 10% 15%;
+
+    --card: 40 30% 97%;
+    --card-foreground: 30 10% 15%;
+
+    --popover: 40 30% 97%;
+    --popover-foreground: 30 10% 15%;
+
+    /* Champagne Gold Primary */
+    --primary: 38 60% 50%;
+    --primary-foreground: 40 33% 98%;
+
+    /* Soft Blush Secondary */
+    --secondary: 350 30% 94%;
+    --secondary-foreground: 350 25% 35%;
+
+    /* Ivory Muted */
+    --muted: 40 20% 92%;
+    --muted-foreground: 30 10% 45%;
+
+    /* Rose Gold Accent */
+    --accent: 15 45% 70%;
+    --accent-foreground: 15 45% 20%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 25% 88%;
+    --input: 40 25% 88%;
+    --ring: 38 60% 50%;
+
+    --radius: 1rem;
+
+    /* Custom Wedding Tokens */
+    --ivory: 40 33% 96%;
+    --champagne: 38 60% 50%;
+    --champagne-light: 38 70% 75%;
+    --blush: 350 30% 90%;
+    --rose-gold: 15 45% 65%;
+    --cream: 40 40% 94%;
+    --gold-gradient: linear-gradient(135deg, hsl(38, 60%, 55%), hsl(30, 55%, 45%));
+    --glass-gradient: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4));
+    
+    /* 3D Shadows */
+    --shadow-soft: 0 10px 40px -10px hsla(30, 20%, 30%, 0.15);
+    --shadow-float: 0 25px 60px -15px hsla(30, 20%, 30%, 0.2);
+    --shadow-glow: 0 0 60px hsla(38, 60%, 50%, 0.3);
+    --shadow-card: 0 20px 50px -20px hsla(30, 20%, 30%, 0.12);
+    
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-blur: blur(20px);
+
+    --sidebar-background: 40 33% 98%;
+    --sidebar-foreground: 30 10% 35%;
+    --sidebar-primary: 38 60% 50%;
+    --sidebar-primary-foreground: 40 33% 98%;
+    --sidebar-accent: 40 20% 92%;
+    --sidebar-accent-foreground: 30 10% 35%;
+    --sidebar-border: 40 25% 88%;
+    --sidebar-ring: 38 60% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  /* 3D Room Container */
+  .room-3d {
+    @apply relative min-h-screen overflow-hidden;
+    perspective: 1500px;
+    perspective-origin: center center;
+  }
+
+  /* Glass Panel */
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Floating 3D Card */
+  .card-3d {
+    @apply relative transition-all duration-500 ease-out;
+    transform-style: preserve-3d;
+    box-shadow: var(--shadow-float);
+  }
+
+  .card-3d:hover {
+    transform: translateY(-12px) rotateX(2deg) scale(1.02);
+    box-shadow: var(--shadow-glow), var(--shadow-float);
+  }
+
+  /* Gold Shimmer Button */
+  .btn-gold {
+    @apply relative overflow-hidden font-semibold tracking-wide;
+    background: var(--gold-gradient);
+    box-shadow: var(--shadow-soft);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .btn-gold::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+  }
+
+  .btn-gold:hover::before {
+    @apply opacity-100;
+  }
+
+  .btn-gold:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* 3D Text Effect */
+  .text-3d {
+    text-shadow: 
+      1px 1px 1px rgba(0,0,0,0.1),
+      2px 2px 4px rgba(0,0,0,0.08),
+      4px 4px 8px rgba(0,0,0,0.05);
+  }
+
+  /* Floating Animation */
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotateX(0); }
+    50% { transform: translateY(-15px) rotateX(2deg); }
+  }
+
+  /* Room Depth Layers */
+  .depth-layer-1 { transform: translateZ(50px); }
+  .depth-layer-2 { transform: translateZ(100px); }
+  .depth-layer-3 { transform: translateZ(150px); }
+
+  /* Scroll Reveal */
+  .reveal {
+    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+  }
+
+  .reveal.visible {
+    @apply opacity-100 translate-y-0;
+  }
+
+  /* Premium Input */
+  .input-premium {
+    @apply glass-panel rounded-xl px-5 py-4 outline-none transition-all duration-300;
+    border: 2px solid transparent;
+  }
+
+  .input-premium:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* 3D Badge */
+  .badge-3d {
+    @apply inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: perspective(500px) rotateX(5deg);
+  }
+
+  /* Parallax Section */
+  .parallax-section {
+    @apply relative;
+    transform-style: preserve-3d;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+}
