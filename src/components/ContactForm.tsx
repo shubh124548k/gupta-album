@@ -33,15 +33,16 @@ const ContactForm = () => {
         >
           <div className="glass-panel p-6 md:p-8 shadow-lg rounded-2xl">
 
-            {/* ✅ NETLIFY FORM */}
+            {/* 🔥 NETLIFY FORM (FINAL) */}
             <form
               name="contact"
               method="POST"
+              action="/success"
               data-netlify="true"
               netlify-honeypot="bot-field"
               className="space-y-4 md:space-y-5"
             >
-              {/* REQUIRED FOR NETLIFY */}
+              {/* REQUIRED HIDDEN FIELDS */}
               <input type="hidden" name="form-name" value="contact" />
               <input type="hidden" name="bot-field" />
 
