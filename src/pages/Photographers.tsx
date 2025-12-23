@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Star, Award, X } from 'lucide-react';
+import { Search, MapPin, Star, Award } from 'lucide-react';
 import Room3D from '@/components/Room3D';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -9,16 +9,13 @@ import GlassPanel from '@/components/GlassPanel';
 import FloatingCard3D from '@/components/FloatingCard3D';
 import { Button } from '@/components/ui/button';
 import { photographers, searchPhotographers, Photographer } from '@/data/photographers';
-import { useAuth } from '@/contexts/AuthContext';
 
 const Photographers = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [filteredPhotographers, setFilteredPhotographers] = useState<Photographer[]>(photographers);
-  const [showAuthModal, setShowAuthModal] = useState(!isAuthenticated);
 
   useEffect(() => {
     // Force scroll to absolute top on mount
@@ -44,26 +41,6 @@ const Photographers = () => {
   }, []);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-    } else {
-      setShowAuthModal(false);
-    }
-  }, [isAuthenticated]);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (showAuthModal && !isAuthenticated) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [showAuthModal, isAuthenticated]);
-
-  useEffect(() => {
     const query = searchParams.get('q') || '';
     setSearchQuery(query);
     
@@ -82,112 +59,9 @@ const Photographers = () => {
     setSearchParams(new URLSearchParams());
   };
 
-  const handleCreateAccount = () => {
-    setShowAuthModal(false);
-    navigate('/auth?mode=signup');
-  };
-
-  const handleSignIn = () => {
-    setShowAuthModal(false);
-    navigate('/auth?mode=signin');
-  };
-
   return (
     <Room3D>
       <Header />
-      
-      {/* Auth Modal Overlay - Mobile visible */}
-      {showAuthModal && !isAuthenticated && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center px-3 md:px-4 overflow-y-auto"
-          style={{
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'fixed',
-            zIndex: 50,
-          }}
-        >
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => {
-              setShowAuthModal(false);
-              navigate('/');
-            }}
-          />
-          
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', damping: 20 }}
-            className="relative z-50 w-full max-w-sm md:max-w-md my-auto"
-          >
-            <GlassPanel className="p-5 md:p-8 border border-primary/20 relative rounded-2xl" hover={false}>
-              {/* Close Button */}
-              <button
-                onClick={() => {
-                  setShowAuthModal(false);
-                  navigate('/');
-                }}
-                className="absolute top-3 right-3 md:top-4 md:right-4 p-2 hover:bg-muted rounded-lg transition-colors"
-              >
-                <X className="w-4 md:w-5 h-4 md:h-5 text-muted-foreground" />
-              </button>
-
-              {/* Content */}
-              <div className="text-center mb-4 md:mb-6">
-                <h2 className="font-serif text-xl md:text-2xl font-bold text-foreground mb-1.5 md:mb-2">
-                  Unlock Our Gallery
-                </h2>
-                <p className="text-xs md:text-sm text-muted-foreground leading-snug">
-                  Sign in to browse our collection of wedding photographers and view portfolios.
-                </p>
-              </div>
-
-              {/* Buttons */}
-              <div className="space-y-2 md:space-y-3">
-                <Button
-                  onClick={handleCreateAccount}
-                  className="w-full btn-gold text-primary-foreground py-2.5 md:py-3 h-auto rounded-lg font-semibold text-sm md:text-base"
-                >
-                  Create Account
-                </Button>
-                <Button
-                  onClick={handleSignIn}
-                  variant="outline"
-                  className="w-full py-2.5 md:py-3 h-auto rounded-lg font-semibold text-sm md:text-base border-2 hover:bg-primary/5"
-                >
-                  Sign In
-                </Button>
-                <button
-                  onClick={() => {
-                    setShowAuthModal(false);
-                    navigate('/');
-                  }}
-                  className="w-full text-muted-foreground hover:text-foreground text-xs md:text-sm py-1.5 transition-colors"
-                >
-                  Continue Browsing
-                </button>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-border/50 space-y-1.5 md:space-y-2 text-xs md:text-sm text-muted-foreground text-center">
-                <p className="text-xs">✓ Verified Photographers</p>
-                <p className="text-xs">✓ Genuine Reviews</p>
-                <p className="text-xs">✓ Secure Booking</p>
-              </div>
-            </GlassPanel>
-          </motion.div>
-        </div>
-      )}
       
       {/* Hero Section - Mobile-first: minimal padding, expanded on desktop */}
       <section className="pt-12 md:pt-16 lg:pt-20 pb-2 md:pb-3 lg:pb-4 px-3 md:px-4 relative">
@@ -274,60 +148,70 @@ const Photographers = () => {
               </Button>
             </GlassPanel>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-5">
               {filteredPhotographers.map((photographer, index) => (
                 <FloatingCard3D
                   key={photographer.id}
                   delay={index * 0.1}
                   onClick={() => navigate(`/photographer/${photographer.id}`)}
                 >
-                  <div className="relative">
+                  <div className="relative w-full aspect-video rounded-t-lg md:rounded-t-xl overflow-hidden bg-muted">
                     <img
-                      src={photographer.gallery[0]}
-                      alt={photographer.name}
-                      className="w-full h-32 md:h-40 object-cover"
+                      src={photographer?.gallery?.[0] || 'https://via.placeholder.com/400x300?text=No+Image'}
+                      alt={photographer?.name || 'Photographer'}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Gallery';
+                      }}
                     />
-                    {photographer.verified && (
-                      <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center gap-0.5">
-                        <Award className="w-2.5 h-2.5" />
+                    {photographer?.verified && (
+                      <div className="absolute top-2 left-2 px-2 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center gap-1 whitespace-nowrap">
+                        <Award className="w-3 h-3" />
                         <span className="hidden sm:inline">Verified</span>
                       </div>
                     )}
-                    {photographer.featured && (
-                      <div className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full bg-rose-gold text-white text-xs font-medium">
-                        Featured
+                    {photographer?.featured && (
+                      <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-rose-gold text-white text-xs font-medium whitespace-nowrap">
+                        <span className="hidden sm:inline">Featured</span>
+                        <span className="sm:hidden">⭐</span>
                       </div>
                     )}
                   </div>
-                  <div className="p-2 md:p-2.5">
-                    <h3 className="font-serif text-xs md:text-sm font-semibold text-foreground mb-0.5 truncate">
-                      {photographer.name}
-                    </h3>
-                    <div className="flex items-center gap-1 text-muted-foreground text-xs mb-1 truncate">
-                      <MapPin className="w-2.5 h-2.5 flex-shrink-0" />
-                      <span className="truncate text-xs">{photographer.city}</span>
-                    </div>
-                    <div className="flex items-center gap-1 mb-1.5 text-xs">
-                      <div className="flex items-center gap-0.5">
-                        <Star className="w-2.5 h-2.5 text-primary fill-primary" />
-                        <span className="font-semibold">{photographer.rating}</span>
+                  <div className="p-3 md:p-4 space-y-2 md:space-y-3">
+                    <div>
+                      <h3 className="font-serif text-sm md:text-base font-semibold text-foreground truncate">
+                        {photographer?.name || 'Unknown Photographer'}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-xs md:text-sm mt-1 truncate">
+                        <MapPin className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
+                        <span className="truncate">{photographer?.city || 'Location Unknown'}</span>
                       </div>
-                      <span className="text-muted-foreground">({photographer.reviewCount})</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-1.5 line-clamp-1">
-                      {photographer.about}
+                    
+                    <div className="flex items-center gap-3 text-xs md:text-sm">
+                      <div className="flex items-center gap-0.5 flex-shrink-0">
+                        <Star className="w-3.5 md:w-4 h-3.5 md:h-4 text-primary fill-primary" />
+                        <span className="font-semibold">{photographer?.rating?.toFixed(1) ?? 'N/A'}</span>
+                      </div>
+                      <span className="text-muted-foreground text-xs">({photographer?.reviewCount ?? 0})</span>
+                    </div>
+
+                    <p className="text-xs md:text-sm text-muted-foreground line-clamp-2">
+                      {photographer?.about || 'Professional photographer'}
                     </p>
-                    <div className="flex flex-wrap gap-0.5 mb-1.5">
-                      {photographer.categories.slice(0, 1).map((category, i) => (
-                        <span key={i} className="px-1 py-0.5 rounded bg-muted text-xs font-medium text-muted-foreground truncate">
+                    
+                    <div className="flex flex-wrap gap-1 pt-1 md:pt-2">
+                      {photographer?.categories?.slice(0, 2).map((category, i) => (
+                        <span key={i} className="px-2 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground truncate">
                           {category}
                         </span>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
-                      <span className="text-xs font-medium text-primary">{photographer.priceRange}</span>
-                      <Button variant="ghost" className="text-primary hover:text-primary/80 text-xs p-0 h-auto">
-                        View →
+
+                    <div className="flex items-center justify-between pt-2 md:pt-3 border-t border-border/50">
+                      <span className="text-xs md:text-sm font-semibold text-primary">{photographer?.priceRange || 'Contact'}</span>
+                      <Button variant="ghost" className="text-primary hover:text-primary/80 text-xs md:text-sm p-0 h-auto font-medium">
+                        View Profile →
                       </Button>
                     </div>
                   </div>

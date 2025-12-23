@@ -64,14 +64,7 @@ const Index = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mt-8 md:mt-10 max-w-2xl mx-auto"
           >
             <Button
-              onClick={() => {
-                const auth = localStorage.getItem('user') ? true : false;
-                if (!auth) {
-                  navigate('/auth?mode=signin');
-                } else {
-                  navigate('/photographers');
-                }
-              }}
+              onClick={() => navigate('/photographers')}
               className="btn-gold text-primary-foreground px-8 md:px-10 py-3 md:py-4 h-auto rounded-lg font-semibold text-base md:text-lg w-full sm:w-auto"
             >
               Browse Photographers

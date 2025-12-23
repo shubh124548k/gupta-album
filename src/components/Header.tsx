@@ -1,15 +1,11 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { Menu, X, User, LogOut, Camera } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { Menu, X, Camera } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, isAuthenticated, signOut } = useAuth();
 
   const navLinks = [
     { path: '/', label: 'Home' },
@@ -18,12 +14,6 @@ const Header = () => {
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
   ];
-
-  const handleSignOut = () => {
-    setIsMenuOpen(false);
-    signOut();
-    navigate('/');
-  };
 
   return (
     <motion.header
@@ -73,38 +63,7 @@ const Header = () => {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-2.5 lg:gap-3">
-              {isAuthenticated ? (
-                <div className="flex items-center gap-3 lg:gap-4">
-                  <div className="flex items-center gap-1.5 lg:gap-2">
-                    <div className="w-8 h-8 rounded-full bg-champagne/20 flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary" />
-                    </div>
-                    <span className="text-xs md:text-sm font-medium">{user?.name}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleSignOut}
-                    className="text-muted-foreground hover:text-foreground text-xs md:text-sm px-2"
-                  >
-                    <LogOut className="w-3.5 h-3.5 mr-1" />
-                    Sign Out
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <Link to="/auth?mode=signin">
-                    <Button variant="ghost" size="sm" className="text-foreground/70 hover:text-foreground text-xs md:text-sm px-2">
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Link to="/auth?mode=signup">
-                    <Button className="btn-gold text-primary-foreground px-4 md:px-5 py-2 md:py-2.5 rounded-lg text-xs md:text-sm">
-                      Get Started
-                    </Button>
-                  </Link>
-                </>
-              )}
+              {/* Removed auth buttons - accessible to all */}
             </div>
 
             {/* Mobile Menu Button */}
@@ -143,35 +102,6 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-border/50 space-y-3">
-                {isAuthenticated ? (
-                  <>
-                    <div className="flex items-center gap-2 py-2">
-                      <User className="w-4 h-4 text-primary" />
-                      <span className="font-medium">{user?.name}</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      onClick={() => { handleSignOut(); setIsMenuOpen(false); }}
-                      className="w-full justify-start"
-                    >
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/auth?mode=signin" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full">Sign In</Button>
-                    </Link>
-                    <Link to="/auth?mode=signup" onClick={() => setIsMenuOpen(false)}>
-                      <Button className="btn-gold w-full text-primary-foreground rounded-xl">
-                        Get Started
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
             </div>
           </motion.div>
         )}
